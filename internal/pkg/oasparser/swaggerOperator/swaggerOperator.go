@@ -23,9 +23,9 @@ import (
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/go-openapi/spec"
-	logger "github.com/wso2/apictl/internal/loggers"
-	"github.com/wso2/apictl/internal/pkg/oasparser/models/apiDefinition"
-	"github.com/wso2/apictl/internal/pkg/oasparser/utills"
+	logger "github.com/wso2/apictl/loggers"
+	"github.com/wso2/apictl/pkg/oasparser/models/apiDefinition"
+	"github.com/wso2/apictl/pkg/oasparser/utills"
 )
 
 /**

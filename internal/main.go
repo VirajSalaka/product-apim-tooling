@@ -14,32 +14,23 @@
  *  limitations under the License.
  *
  */
-
-package api
+package main
 
 import (
-	"net/http"
+	"os"
 
-	logger "github.com/wso2/apictl/loggers"
+	logger "github.com/sirupsen/logrus"
+	"github.com/wso2/apictl/cmd/microgateway"
 )
 
-//This package contains the REST API for the control plane configurations
+func main() {
 
-type RESTService struct{}
+	var file string
+	if len(os.Args) > 1 {
+		file = os.Args[1]
+		logger.Debug(file)
+	}
 
-// TODO: Implement. Simply copy the swagger content to the location defined in the configs or directly deploy the api.
-// Deploy API in microgateway.
-func (rest *RESTService) ApiPOST(w http.ResponseWriter, r *http.Request) {
-	logger.LoggerApi.Info(w, "Your API is added")
-
-}
-
-// Update deployed api
-func (rest *RESTService) ApiPUT(w http.ResponseWriter, r *http.Request) {
-
-}
-
-// Remove a deployed api
-func (rest *RESTService) ApiDELETE(w http.ResponseWriter, r *http.Request) {
+	microgateway.StartMicroGateway(os.Args)
 
 }

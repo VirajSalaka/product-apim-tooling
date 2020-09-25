@@ -22,7 +22,7 @@ import (
 	"unicode"
 
 	"github.com/ghodss/yaml"
-	logger "github.com/wso2/apictl/internal/loggers"
+	logger "github.com/wso2/apictl/loggers"
 )
 
 /**

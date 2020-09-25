@@ -17,19 +17,21 @@
 package configs
 
 import (
-	"github.com/BurntSushi/toml"
-	logger "github.com/sirupsen/logrus"
-	config "github.com/wso2/micro-gw/configs/confTypes"
 	"io/ioutil"
 	"os"
 	"sync"
+
+	"github.com/BurntSushi/toml"
+	logger "github.com/sirupsen/logrus"
+	config "github.com/wso2/apictl/configs/confTypes"
 )
+
 var (
-	once_c sync.Once
-	once_lc sync.Once
-	configs *config.Config
+	once_c     sync.Once
+	once_lc    sync.Once
+	configs    *config.Config
 	logConfigs *config.LogConfig
-	e error
+	e          error
 )
 
 /**
@@ -87,6 +89,6 @@ func ReadLogConfigs() (*config.LogConfig, error) {
  * Clear the singleton log config instance for the hot update.
  *
  */
-func ClearLogConfigInstance()  {
+func ClearLogConfigInstance() {
 	once_lc = sync.Once{}
 }

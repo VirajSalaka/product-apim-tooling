@@ -21,7 +21,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/wso2/apictl/internal/pkg/oasparser/envoyCodegen"
+	"github.com/wso2/apictl/pkg/oasparser/envoyCodegen"
 )
 
 func TestGenerateRegex(t *testing.T) {

@@ -23,7 +23,7 @@ import (
 	"strings"
 
 	"github.com/sirupsen/logrus"
-	"github.com/wso2/apictl/internal/configs"
+	"github.com/wso2/apictl/configs"
 	lumberjack "gopkg.in/natefinch/lumberjack.v2"
 )
 

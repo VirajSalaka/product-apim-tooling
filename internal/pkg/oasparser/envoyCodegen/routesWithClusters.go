@@ -23,10 +23,10 @@ import (
 	routev3 "github.com/envoyproxy/go-control-plane/envoy/config/route/v3"
 	envoy_type_matcherv3 "github.com/envoyproxy/go-control-plane/envoy/type/matcher/v3"
 
-	"github.com/wso2/apictl/internal/configs"
-	logger "github.com/wso2/apictl/internal/loggers"
-	"github.com/wso2/apictl/internal/pkg/oasparser/models/apiDefinition"
-	swag_operator "github.com/wso2/apictl/internal/pkg/oasparser/swaggerOperator"
+	"github.com/wso2/apictl/configs"
+	logger "github.com/wso2/apictl/loggers"
+	"github.com/wso2/apictl/pkg/oasparser/models/apiDefinition"
+	swag_operator "github.com/wso2/apictl/pkg/oasparser/swaggerOperator"
 
 	"strings"
 	"time"

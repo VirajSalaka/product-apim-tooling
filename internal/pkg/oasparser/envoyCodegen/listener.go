@@ -27,7 +27,7 @@ import (
 
 	"github.com/golang/protobuf/ptypes"
 	"github.com/wso2/apictl/configs"
-	logger "github.com/wso2/apictl/internal/loggers"
+	logger "github.com/wso2/apictl/loggers"
 )
 
 /**
@@ -198,9 +198,9 @@ func getAccessLogConfigs() access_logv3.AccessLog {
 		ConfigType: &access_logv3.AccessLog_TypedConfig{
 			TypedConfig: accessLogTypedConf,
 		},
-		XXX_NoUnkeyedLiteral: struct{}{},
-		XXX_unrecognized:     nil,
-		XXX_sizecache:        0,
+		// XXX_NoUnkeyedLiteral: struct{}{},
+		// XXX_unrecognized:     nil,
+		// XXX_sizecache:        0,
 	}
 
 	return access_logs

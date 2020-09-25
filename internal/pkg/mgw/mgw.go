@@ -17,30 +17,17 @@
 package mgw
 
 import (
-	corev3 "github.com/envoyproxy/go-control-plane/envoy/config/core/v3"
-	clusterservicev3 "github.com/envoyproxy/go-control-plane/envoy/service/cluster/v3"
-	discoveryv3 "github.com/envoyproxy/go-control-plane/envoy/service/discovery/v3"
-	endpointservicev3 "github.com/envoyproxy/go-control-plane/envoy/service/endpoint/v3"
-	listenerservicev3 "github.com/envoyproxy/go-control-plane/envoy/service/listener/v3"
-	routeservicev3 "github.com/envoyproxy/go-control-plane/envoy/service/route/v3"
-	cachev3 "github.com/envoyproxy/go-control-plane/pkg/cache/v3"
-	xdsv3 "github.com/envoyproxy/go-control-plane/pkg/server/v3"
-
-	"context"
 	"flag"
 	"fmt"
-	"net"
 	"os"
 	"os/signal"
-	"sync/atomic"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/wso2/apictl/internal/configs"
-	mgwconfig "github.com/wso2/apictl/internal/configs/confTypes"
-	logger "github.com/wso2/apictl/internal/loggers"
-	apiserver "github.com/wso2/apictl/internal/pkg/api"
-	oasParser "github.com/wso2/apictl/internal/pkg/oasparser"
-	"google.golang.org/grpc"
+	"github.com/wso2/apictl/configs"
+	mgwconfig "github.com/wso2/apictl/configs/confTypes"
+	logger "github.com/wso2/apictl/loggers"
+	apiserver "github.com/wso2/apictl/pkg/api"
+	oasParser "github.com/wso2/apictl/pkg/oasparser"
 )
 
 var (
@@ -57,77 +44,74 @@ var (
 
 	version int32
 
-	cache cachev3.SnapshotCache
+	// cache cachev3.SnapshotCache
 )
 
 const (
-	XdsCluster = "xds_cluster"
-	Ads        = "ads"
-	Xds        = "xds"
-	Rest       = "rest"
+	Rest = "rest"
 )
 
 func init() {
 	flag.BoolVar(&debug, "debug", true, "Use debug logging")
 	flag.BoolVar(&onlyLogging, "onlyLogging", false, "Only demo AccessLogging Service")
-	flag.UintVar(&port, "port", 18000, "Management server port")
-	flag.UintVar(&gatewayPort, "gateway", 18001, "Management server port for HTTP gateway")
-	flag.UintVar(&alsPort, "als", 18090, "Accesslog server port")
-	flag.StringVar(&mode, "ads", Ads, "Management server type (ads, xds, rest)")
+	// flag.UintVar(&port, "port", 18000, "Management server port")
+	// flag.UintVar(&gatewayPort, "gateway", 18001, "Management server port for HTTP gateway")
+	// flag.UintVar(&alsPort, "als", 18090, "Accesslog server port")
+	// flag.StringVar(&mode, "ads", Ads, "Management server type (ads, xds, rest)")
 }
 
 // IDHash uses ID field as the node hash.
-type IDHash struct{}
+// type IDHash struct{}
 
 // ID uses the node ID field
-func (IDHash) ID(node *corev3.Node) string {
-	if node == nil {
-		return "unknown"
-	}
-	return node.Id
-}
+// func (IDHash) ID(node *corev3.Node) string {
+// 	if node == nil {
+// 		return "unknown"
+// 	}
+// 	return node.Id
+// }
 
-var _ cachev3.NodeHash = IDHash{}
+// var _ cachev3.NodeHash = IDHash{}
 
 const grpcMaxConcurrentStreams = 1000000
 
-/**
- * This starts an xDS server at the given port.
- *
- * @param ctx   Context
- * @param server   Xds server instance
- * @param port   Management server port
- */
-func RunManagementServer(ctx context.Context, server xdsv3.Server, port uint) {
-	var grpcOptions []grpc.ServerOption
-	grpcOptions = append(grpcOptions, grpc.MaxConcurrentStreams(grpcMaxConcurrentStreams))
-	grpcServer := grpc.NewServer()
+// /**
+//  * This starts an xDS server at the given port.
+//  *
+//  * @param ctx   Context
+//  * @param server   Xds server instance
+//  * @param port   Management server port
+//  */
+// func RunManagementServer(ctx context.Context, server xdsv3.Server, port uint) {
+// 	var grpcOptions []grpc.ServerOption
+// 	grpcOptions = append(grpcOptions, grpc.MaxConcurrentStreams(grpcMaxConcurrentStreams))
+// 	grpcServer := grpc.NewServer()
 
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
-	if err != nil {
-		logger.LoggerMgw.Fatal("failed to listen: ", err)
-	}
+// 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+// 	if err != nil {
+// 		logger.LoggerMgw.Fatal("failed to listen: ", err)
+// 	}
 
-	// register services
-	discoveryv3.RegisterAggregatedDiscoveryServiceServer(grpcServer, server)
-	endpointservicev3.RegisterEndpointDiscoveryServiceServer(grpcServer, server)
-	clusterservicev3.RegisterClusterDiscoveryServiceServer(grpcServer, server)
-	routeservicev3.RegisterRouteDiscoveryServiceServer(grpcServer, server)
-	listenerservicev3.RegisterListenerDiscoveryServiceServer(grpcServer, server)
+// 	// register services
+// 	discoveryv3.RegisterAggregatedDiscoveryServiceServer(grpcServer, server)
+// 	endpointservicev3.RegisterEndpointDiscoveryServiceServer(grpcServer, server)
+// 	clusterservicev3.RegisterClusterDiscoveryServiceServer(grpcServer, server)
+// 	routeservicev3.RegisterRouteDiscoveryServiceServer(grpcServer, server)
+// 	listenerservicev3.RegisterListenerDiscoveryServiceServer(grpcServer, server)
 
-	logger.LoggerMgw.Info("port: ", port, " management server listening")
-	//log.Fatalf("", Serve(lis))
-	//go func() {
-	go func() {
-		if err = grpcServer.Serve(lis); err != nil {
-			logger.LoggerMgw.Error(err)
-		}
-	}()
-	//<-ctx.Done()
-	//grpcServer.GracefulStop()
-	//}()
+// 	logger.LoggerMgw.Info("port: ", port, " management server listening")
+// 	//log.Fatalf("", Serve(lis))
+// 	//go func() {
+// 	go func() {
+// 		if err = grpcServer.Serve(lis); err != nil {
+// 			logger.LoggerMgw.Error(err)
+// 		}
+// 	}()
+// 	//<-ctx.Done()
+// 	//grpcServer.GracefulStop()
+// 	//}()
 
-}
+// }
 
 /**
  * Recreate the envoy instances from swaggers.
@@ -135,22 +119,23 @@ func RunManagementServer(ctx context.Context, server xdsv3.Server, port uint) {
  * @param location   Swagger files location
  */
 func updateEnvoy(location string) {
-	var nodeId string
-	if len(cache.GetStatusKeys()) > 0 {
-		nodeId = cache.GetStatusKeys()[0]
-	}
+	// var nodeId string
+	// if len(cache.GetStatusKeys()) > 0 {
+	// 	nodeId = cache.GetStatusKeys()[0]
+	// }
 
-	listeners, clusters, routes, endpoints := oasParser.GetProductionSources(location)
+	envoystring := oasParser.GetProductionSources(location)
 
-	atomic.AddInt32(&version, 1)
-	logger.LoggerMgw.Infof(">>>>>>>>>>>>>>>>>>> creating snapshot Version " + fmt.Sprint(version))
-	snap := cachev3.NewSnapshot(fmt.Sprint(version), endpoints, clusters, routes, listeners, nil)
-	snap.Consistent()
+	// atomic.AddInt32(&version, 1)
+	// logger.LoggerMgw.Infof(">>>>>>>>>>>>>>>>>>> creating snapshot Version " + fmt.Sprint(version))
+	// snap := cachev3.NewSnapshot(fmt.Sprint(version), endpoints, clusters, routes, listeners, nil)
+	// snap.Consistent()
 
-	err := cache.SetSnapshot(nodeId, snap)
-	if err != nil {
-		logger.LoggerMgw.Error(err)
-	}
+	// err := cache.SetSnapshot(nodeId, snap)
+	// if err != nil {
+	// 	logger.LoggerMgw.Error(err)
+	// }
+	fmt.Print("\n\n" + envoystring + "\n\n")
 }
 
 /**
@@ -170,8 +155,8 @@ func Run(conf *mgwconfig.Config) {
 
 	flag.Parse()
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	// ctx, cancel := context.WithCancel(context.Background())
+	// defer cancel()
 
 	//log config watcher
 	watcherLogConf, _ := fsnotify.NewWatcher()
@@ -181,17 +166,17 @@ func Run(conf *mgwconfig.Config) {
 		logger.LoggerMgw.Fatal("Error reading the log configs. ", err)
 	}
 
-	logger.LoggerMgw.Info("Starting control plane ....")
+	// logger.LoggerMgw.Info("Starting control plane ....")
 
-	cache = cachev3.NewSnapshotCache(mode != Ads, IDHash{}, nil)
+	// cache = cachev3.NewSnapshotCache(mode != Ads, IDHash{}, nil)
 
-	srv := xdsv3.NewServer(ctx, cache, nil)
+	// srv := xdsv3.NewServer(ctx, cache, nil)
 
 	//als := &myals.AccessLogService{}
 	//go RunAccessLogServer(ctx, als, alsPort)
 
 	// start the xDS server
-	RunManagementServer(ctx, srv, port)
+	// RunManagementServer(ctx, srv, port)
 	go apiserver.Start(conf)
 
 	updateEnvoy(conf.Apis.Location)

@@ -29,10 +29,10 @@ import (
 	"github.com/envoyproxy/go-control-plane/pkg/cache/types"
 	"github.com/gogo/protobuf/jsonpb"
 
-	logger "github.com/wso2/apictl/internal/loggers"
-	enovoy "github.com/wso2/apictl/internal/pkg/oasparser/envoyCodegen"
-	swgger "github.com/wso2/apictl/internal/pkg/oasparser/swaggerOperator"
+	logger "github.com/wso2/apictl/loggers"
+	enovoy "github.com/wso2/apictl/pkg/oasparser/envoyCodegen"
 	"github.com/wso2/apictl/pkg/oasparser/models/envoy"
+	swgger "github.com/wso2/apictl/pkg/oasparser/swaggerOperator"
 
 	"strings"
 )
@@ -46,7 +46,7 @@ import (
  * @return []types.Resource Production routes
  * @return []types.Resource Production endpoints
  */
-func GetProductionSources(location string) ([]types.Resource, []types.Resource, []types.Resource, []types.Resource) {
+func GetProductionSources(location string) string {
 	logger.LoggerOasparser.Debug("debug check....................")
 	mgwSwaggers, err := swgger.GenerateMgwSwagger(location)
 	if err != nil {
@@ -67,7 +67,7 @@ func GetProductionSources(location string) ([]types.Resource, []types.Resource, 
 		endpointsP = append(endpointsP, endpoints...)
 	}
 
-	envoyNodeProd := new(envoy.EnvoyNode)
+	// envoyNodeProd := new(envoy.EnvoyNode)
 	//envoybstrap := new(bootstrap.Bootstrap)
 
 	if len(mgwSwaggers) > 0 {
@@ -77,10 +77,10 @@ func GetProductionSources(location string) ([]types.Resource, []types.Resource, 
 		routeConfigNameP := "routeProd_" + strings.Replace(mgwSwaggers[0].GetTitle(), " ", "", -1) + mgwSwaggers[0].GetVersion()
 		listnerProd := enovoy.CreateListener(listenerNameP, routeConfigNameP, vHostP)
 
-		envoyNodeProd.SetListener(&listnerProd)
-		envoyNodeProd.SetClusters(clustersP)
-		envoyNodeProd.SetRoutes(routesP)
-		envoyNodeProd.SetEndpoints(endpointsP)
+		// envoyNodeProd.SetListener(&listnerProd)
+		// envoyNodeProd.SetClusters(clustersP)
+		// envoyNodeProd.SetRoutes(routesP)
+		// envoyNodeProd.SetEndpoints(endpointsP)
 
 		//can be used 'types' straightaway
 		envoybstrap := bootstrap.Bootstrap{
@@ -128,14 +128,15 @@ func GetProductionSources(location string) ([]types.Resource, []types.Resource, 
 		result, _ := m.MarshalToString(&envoybstrap)
 		fmt.Print(string(result))
 
+		logger.LoggerOasparser.Info(len(routesP), " routes are generated successfully")
+		logger.LoggerOasparser.Info(len(clustersP), " clusters are generated successfully")
+		logger.LoggerOasparser.Info(len(endpointsP), " endpoints are generated successfully")
+		return string(result)
+
 	} else {
 		logger.LoggerOasparser.Error("No Api definitions found")
+		return ""
 	}
-
-	logger.LoggerOasparser.Info(len(routesP), " routes are generated successfully")
-	logger.LoggerOasparser.Info(len(clustersP), " clusters are generated successfully")
-	logger.LoggerOasparser.Info(len(endpointsP), " endpoints are generated successfully")
-	return envoyNodeProd.GetSources()
 }
 
 /**

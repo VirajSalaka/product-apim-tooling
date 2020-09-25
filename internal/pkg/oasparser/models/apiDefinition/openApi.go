@@ -25,8 +25,8 @@ import (
 	"strings"
 
 	"github.com/getkin/kin-openapi/openapi3"
-	"github.com/wso2/apictl/internal/configs"
-	logger "github.com/wso2/apictl/internal/loggers"
+	"github.com/wso2/apictl/configs"
+	logger "github.com/wso2/apictl/loggers"
 )
 
 /**

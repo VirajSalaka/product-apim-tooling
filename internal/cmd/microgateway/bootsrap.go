@@ -14,32 +14,32 @@
  *  limitations under the License.
  *
  */
-
-package api
+package microgateway
 
 import (
-	"net/http"
-
-	logger "github.com/wso2/apictl/loggers"
+	logger "github.com/sirupsen/logrus"
+	"github.com/wso2/apictl/configs"
+	"github.com/wso2/apictl/pkg/mgw"
 )
 
-//This package contains the REST API for the control plane configurations
-
-type RESTService struct{}
-
-// TODO: Implement. Simply copy the swagger content to the location defined in the configs or directly deploy the api.
-// Deploy API in microgateway.
-func (rest *RESTService) ApiPOST(w http.ResponseWriter, r *http.Request) {
-	logger.LoggerApi.Info(w, "Your API is added")
-
+func initServer() error {
+	return nil
 }
 
-// Update deployed api
-func (rest *RESTService) ApiPUT(w http.ResponseWriter, r *http.Request) {
+/**
+ * Start the control plane.
+ *
+ */
+func StartMicroGateway(args []string) {
 
-}
-
-// Remove a deployed api
-func (rest *RESTService) ApiDELETE(w http.ResponseWriter, r *http.Request) {
-
+	logger.Info("Starting Microgateway")
+	err := initServer()
+	if err != nil {
+		logger.Fatal("Error starting the control plane", err)
+	}
+	conf, errReadConfig := configs.ReadConfigs()
+	if errReadConfig != nil {
+		logger.Fatal("Error loading configuration. ", errReadConfig)
+	}
+	mgw.Run(conf)
 }

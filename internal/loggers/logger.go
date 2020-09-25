@@ -18,7 +18,7 @@ package loggers
 
 import (
 	"github.com/sirupsen/logrus"
-	"github.com/wso2/apictl/internal/pkg/logging"
+	"github.com/wso2/apictl/pkg/logging"
 )
 
 /* loggers should be initiated only for the main packages
@@ -28,10 +28,10 @@ When you add a new logger instance add the related package name as a constant
 */
 
 const (
-	pkgApi       = "github.com/wso2/apictl/internal/pkg/api"
-	pkgAuth      = "github.com/wso2/apictl/internal/pkg/auth"
-	pkgMgw       = "github.com/wso2/apictl/internal/pkg/mgw"
-	pkgOasparser = "github.com/wso2/apictl/internal/pkg/oasparser"
+	pkgApi       = "github.com/wso2/apictl/pkg/api"
+	pkgAuth      = "github.com/wso2/apictl/pkg/auth"
+	pkgMgw       = "github.com/wso2/apictl/pkg/mgw"
+	pkgOasparser = "github.com/wso2/apictl/pkg/oasparser"
 )
 
 var (

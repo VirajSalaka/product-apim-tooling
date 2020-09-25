@@ -20,8 +20,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/wso2/apictl/internal/configs/confTypes"
-	logger "github.com/wso2/apictl/internal/loggers"
+	"github.com/wso2/apictl/configs/confTypes"
+	logger "github.com/wso2/apictl/loggers"
 )
 
 type Server struct {

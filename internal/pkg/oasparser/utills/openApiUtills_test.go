@@ -20,7 +20,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/wso2/apictl/internal/pkg/oasparser/utills"
+	"github.com/wso2/apictl/pkg/oasparser/utills"
 )
 
 func TestFindSwaggerVersion(t *testing.T) {
